@@ -2,7 +2,7 @@ import config
 
 def display_settings():
     print "config.anneal = " + str(config.anneal)
-    print "config.random_start = " + str(config.random_start)
+    print "config.greedy_start = " + str(config.greedy)
     print "config.random_anneal = " + str(config.random_anneal)
 
 def display_init_cost(cost):
@@ -20,7 +20,7 @@ def display_acceptance(ap, r, new_cost, status):
 def display_cost_update(bcost):
     print "changed best cost to " + str(bcost)
 
-def display_progress_bar(bcost, T):
+def display_annealing_progress(bcost, T):
     print "T is: " + str(T) + "   Best cost is: " + str(bcost)
 
 def display_result(i, cost):

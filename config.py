@@ -1,12 +1,16 @@
+
+### Algorithms used ###
+greedy = True
 anneal = True
-random_start = False
-random_anneal = True#False
-progress_bar = True
+random_anneal = False
+
+### Command-line output ###
+display_progress = True
 verbose = False
 super_verbose = False
-GUI = False
 
 num_tries = 1
+
 ### Annealing Settings ###
 T = 1
 alpha = 0.95

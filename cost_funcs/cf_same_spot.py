@@ -2,17 +2,17 @@ from collections import Counter
 
 import config
 
-def freqs(tables):
-    all_people_ever_at_tables = {}
-    for table in [table for table in tables if table.name != 'Head']:
-        ids = [person.id for person in table.people]
+def freqs(groups):
+    all_people_ever_at_groups = {}
+    for group in [group for group in groups]:
+        ids = [person.id for person in group.people]
         try:
-            all_people_ever_at_tables[table.name].extend(ids)
-        except KeyError: # table not yet in dict
-            all_people_ever_at_tables[table.name] = ids
+            all_people_ever_at_groups[group.name].extend(ids)
+        except KeyError: # group not yet in dict
+            all_people_ever_at_groups[group.name] = ids
 
     frequencies = []
-    for table_name, ids in all_people_ever_at_tables.iteritems():
+    for group_name, ids in all_people_ever_at_groups.iteritems():
         c = Counter(ids)
         frequencies.extend(c.values())
     frequencies_counter = Counter(frequencies)
@@ -28,7 +28,7 @@ def cost(frequencies_counter):
     return cost
 
 
-def cf_same_spot(tables):
+def cf_same_spot(groups):
     """ Cost of people sitting in same place multiple times """
-    frequencies_counter = freqs(tables)
+    frequencies_counter = freqs(groups)
     return cost(frequencies_counter)

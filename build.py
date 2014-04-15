@@ -125,10 +125,10 @@ def populate_preassigned_tables(people, tables, days):
                 table.people.append(person)
     return tables
 
-def build_guess(people, tables, days):
-    tables_out = populate_preassigned_tables(people, tables, days)
-    for d in days:
+def build_guess(people, groups, all_days):
+    groups_out = groups
+    for d in all_days:
         random.shuffle(people)
-        tables_out = seat_people(people, tables_out, d)
-    guess = Solution(tables_out)
+        groups_out = groupings(people, groups_out, d)
+    guess = Solution(groups_out)
     return guess
