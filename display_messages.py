@@ -3,7 +3,6 @@ import config
 def display_settings():
     print "config.anneal = " + str(config.anneal)
     print "config.greedy_start = " + str(config.greedy)
-    print "config.random_anneal = " + str(config.random_anneal)
 
 def display_init_cost(cost):
     print "Best init cost " + str(cost)

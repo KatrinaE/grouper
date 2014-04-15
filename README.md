@@ -18,49 +18,58 @@ both of which can be installed with pip:
 
 To run the tests, you'll need nose:
 
-   pip install nose
+    pip install nose
 
-Grouper was written for Python 2.7.6. It has not been tested with
-other versions.
+(Note: Grouper was written for Python 2.7.6. It has not been tested with
+other versions.)
 
-***HOW TO INSTALL Grouper***
+Install Grouper by cloning this repository:
 
-###Running from the Command Line Interface
+    git clone https://github.com/KatrinaE/grouper.git </your/desired/path/to/grouper>
+
+
+###Running from the Command Line
 To run Grouper from the command line, use
 
-    python grouper.py <people file> <num days> -s <size of groups>
+    grouper <people file> <num days> -s <size of groups>
 
 or
 
-    python grouper.py <people file> <num days> -n <number of groups>
+    grouper <people file> <num days> -n <number of groups>
 
 `people file` is a file containing peoples' names, one per line.
 `num days` is the number of days, or rounds, you are making groups for.
-`size of groups` is the preferred size of each group. ***NEED TO FIX HOW THIS IS HANDLED***
+`size of groups` is the preferred size of each group.
 `number of groups` is the preferred number of groups.
 
 Grouper requires that you enter either `size of groups` or 
 `number of groups`, but not both.
+
+
+If you'd like to run Grouper from anywhere, mark Grouper's main.py
+as executible and add it to your path:
+
+    cd path-to-grouper
+    chmod u+x main.py
+    ln -s path-to-grouper/main.py /usr/local/bin/grouper
+
+Now you can run, e.g.:
+
+    grouper <people file> <num days> -n <number of groups>
+
+from any directory.
 
 Grouper's output is a CSV file containing the 
 lists of individuals sitting at each table on each day.
 By default, it is named 'output.csv'. You can change its name
 by using the `-f` option in the command line, e.g:
 
-    python grouper.py <people file> <num days> -n <number of groups> -f <filename>
+    grouper <people file> <num days> -n <number of groups> -f <filename>
 
 ###Running from the GUI
-Grouper comes with a simple GUI[1] ****FOOTNOTE: Like the rest of Grouper, 
-the GUI is written in Python, using the Tkinter library. Grouper has a desktop
-interface rather than a web one because it is descended from an earlier
-desktop application. A web front-end is in the works.****
-
-To start the GUI from the command line, run:
+Grouper comes with a simple GUI*. To start the GUI from the command line, run:
 
     python grouper-gui.py
-
-****MORE GUI INSTRUCTIONS. Figure out how to change the progress bar so that the range is decided dynamically. *****
-
 
 ###Optimization Rules
 Grouper uses the following criteria:
@@ -96,26 +105,36 @@ returns a random solution.
 Grouper comes with the following configuration settings, set in
 `config.py`:
 
-* `greedy` (True/False): enable/disable the greedy grouping algorithm
-* `anneal` (True/False): enable/disable the annealing algorithm
-* `random_anneal` ****SOMETHING****
-* `display_progress` (True/False): if True, displays the current 
-temperature and best cost at the end of each annealing iteration.
-* `verbose` (True/False): print debugging messages
-* `super_verbose` (True/False): print even more debugging messages
-* `num_tries` (integer >= 1): the number of attempts to make. Default is 1.
-* `T`: (float >= 0): the initial annealing temperature. Default is 1.
-* `alpha`: (float between 0 and 1): the proportion by which to decrease `T`
-at the end of each annealing iteration. Default is 0.95.
-* `T_min` (float between 0 and `T`): the temperature at which to stop if
-an acceptable solution has not yet been found. Default is 0.001.
-* `max_acceptable_cost` (int >= 0): the cost at which to stop searching for
+| Config Parameter | Possible Values | Purpose |
+|------------------|-----------------|---------|
+| `greedy`         | (True/False)    | Enable/disable the greedy grouping algorithm |
+| `anneal`| (True/False) | Enable/disable the annealing algorithm |
+| `display_progress` | (True/False) | If True, displays the current 
+temperature and best cost at the end of each annealing iteration.|
+| `verbose` | (True/False) | Print debugging messages |
+| `super_verbose` | (True/False) | Print even more debugging messages |
+| `num_tries` | (integer >= 1) | The number of attempts to make. Default is 1.|
+|     |              |                                                  |
+| `T` | (float >= 0) | the initial annealing temperature. Default is 1. |
+| `alpha` | (float between 0 and 1) | The proportion by which to decrease `T`
+at the end of each annealing iteration. Default is 0.95. |
+| `T_min` (float between 0 and `T`) | The temperature at which to stop if
+an acceptable solution has not yet been found. Default is 0.001. |
+| `max_acceptable_cost` | (int >= 0) | the cost at which to stop searching for
 a better solution and return the current one. Default is 0, which corresponds
-with perfectly satisfying all constraints.
-* `iterations_per_temp` (int >= 0): the number of switches to make at each
-temperature while annealing. Default is 500.
+with perfectly satisfying all constraints. |
+| `iterations_per_temp` | (int >= 0) | the number of switches to make at each
+temperature while annealing. Default is 500. |
 
-The last five parameters correspond with ***SIMULATED ANNEALING***
+The last five parameters correspond with simulated annealing.
 
 ###Performance
-****Performance is weak****
+Grouper's performance is hampered by the expense of computing its cost functions.
+Depending on the specific parameters, generating groupings of 100 people can take
+15-30 minutes. If you just need a 'good-enough' grouping, set the `anneal` setting
+to False.
+
+\* Like the rest of Grouper, 
+the GUI is written in Python, using the Tkinter library. Grouper has a desktop
+interface rather than a web one because it is descended from an earlier
+desktop application.

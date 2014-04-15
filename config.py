@@ -2,7 +2,6 @@
 ### Algorithms used ###
 greedy = True
 anneal = True
-random_anneal = False
 
 ### Command-line output ###
 display_progress = True
