@@ -119,7 +119,7 @@ class ResultsFrame(Frame):
 
 
     def save_file(self):
-        write_to_csv(self.parent.solution.solution, self.save_var.get())
+        write_to_csv(self.input_frame.solution.solution, self.save_var.get())
 
 
 
@@ -559,11 +559,11 @@ class ProgressFrame(Frame):
         self.pause_var = StringVar()
         self.pause_var.set('Pause')
         self.pause_button = Button(self, textvariable=self.pause_var, state='disabled',\
-                                   command=lambda: self.parent.pause_or_resume(), width=10, pady=20)
+                                   command=lambda: self.input_frame.pause_or_resume(), width=10, pady=20)
         self.pause_button.grid(row=3, column=0, columnspan=2)
 
         self.reset_button = Button(self, text="Reset", state='disabled', \
-                                   command = lambda:self.parent.reset(), width=10)
+                                   command = lambda:self.input_frame.reset(), width=10)
         self.reset_button.grid(row=4, column=0, columnspan=2)
 
 
@@ -630,6 +630,8 @@ def main():
     input_frame = InputFrame(centered_window, progress_frame, results_frame)
     input_frame.grid(row=2, column=0, padx=(30,20), sticky=(N))
 
+    progress_frame.input_frame = input_frame
+    results_frame.input_frame = input_frame
     root.mainloop()  
 
 
