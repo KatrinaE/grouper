@@ -58,8 +58,6 @@ def write_to_csv(groups, days, filename):
 
     fieldnames = ['Name']
     fieldnames.extend(days)
-    print fieldnames
-    print filename
     with open(filename,'w') as file:
         csvwriter = csv.DictWriter(file, dialect='excel', delimiter=',', quoting=csv.QUOTE_ALL, fieldnames=fieldnames)
         csvwriter.writerow(dict((fn,fn) for fn in fieldnames))

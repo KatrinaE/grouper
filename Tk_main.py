@@ -109,16 +109,22 @@ class ResultsFrame(Frame):
         self.save_var = StringVar()
         self.save_var.set('output.csv')
         self.save_entry = ttk.Entry(self, textvariable=self.save_var, width=20, state='disabled', foreground='gray')
-        self.save_entry.grid(row=9, column=0, pady=10)
+        #self.save_entry.grid(row=9, column=0, pady=10)
 
         self.save_button_var = StringVar()
         self.save_button_var.set('Save')
         self.save_button = Button(self, textvariable=self.save_button_var, state='disabled',\
                                   command=lambda: self.save_file())
-        self.save_button.grid(row=9, column=1, pady=10)
+        self.save_button.grid(row=9, column=0, columnspan=2, pady=10)
 
 
     def save_file(self):
+        options = dict(defaultextension='.csv',\
+                   filetypes=[('CSV files','*.csv'), \
+                              ('Text files','*.txt')])
+        filename = tkFileDialog.asksaveasfilename(**options)
+        self.save_var.set(filename)        
+        self.update_idletasks()
         write_to_csv(self.input_frame.solution.solution, self.input_frame.solution.days, 
                      self.save_var.get())
 
@@ -190,17 +196,6 @@ class InputFrame(Frame):
                                         command=lambda: self.generate_results())
         self.submit_button.grid(row=8, column=0, columnspan=2, pady=(20, 20))
 
-        self.pause_var = StringVar()
-        self.pause_var.set('Pause')
-        self.pause_button = Button(self, textvariable=self.pause_var, state='disabled',\
-                                   command=lambda: self.pause_or_resume(), width=10, pady=20)
-        self.pause_button.grid(row=9, column=0, columnspan=2)
-
-
-        self.reset_button = Button(self, text="Reset", state='disabled', \
-                                   command = lambda:self.reset(), width=10)
-        self.reset_button.grid(row=10, column=0, columnspan=2)
-
     def choose_input_type(self):
         if self.input_type_var.get() == 'num_groups':
             self.size_of_groups_var.set('')
@@ -246,6 +241,14 @@ class InputFrame(Frame):
             print "file not selected"
 
 
+    def set_filename(self, filename_var):
+        options = dict(defaultextension='.csv',\
+                   filetypes=[('CSV files','*.csv'), \
+                              ('Text files','*.txt')])
+        filename = tkFileDialog.asksaveasfilename(**options)
+        filename_var.set(filename)        
+        self.update_idletasks()
+
     def switch_to_input_mode(self):
         self.submit_button.config(state='active')
         self.frame_header.config(foreground="black")
@@ -256,9 +259,9 @@ class InputFrame(Frame):
         self.results_frame.save_entry.config(state='disabled', foreground='gray')
         self.results_frame.save_button.config(state="disabled")
 
-        self.pause_button.config(state="disabled")
-        self.pause_var.set("Pause")
-        self.reset_button.config(state="disabled")
+        self.progress_frame.pause_button.config(state="disabled")
+        self.progress_frame.pause_var.set("Pause")
+        self.progress_frame.reset_button.config(state="disabled")
 
         self.progress_frame.plot_frame.title.config(foreground="gray")
         self.progress_frame.plot_frame.shield.grid(row=1, column=0)
@@ -313,9 +316,9 @@ class InputFrame(Frame):
         self.results_frame.save_entry.config(state='normal', foreground='black')
         self.results_frame.save_button.config(state="active")
 
-        self.pause_button.config(state="active")
-        self.pause_var.set("Resume")
-        self.reset_button.config(state="active")
+        self.progress_frame.pause_button.config(state="active")
+        self.progress_frame.pause_var.set("Resume")
+        self.progress_frame.reset_button.config(state="active")
 
         self.progress_frame.plot_frame.title.config(foreground="gray")
         self.progress_frame.plot_frame.shield.grid(row=1, column=0)
@@ -355,10 +358,10 @@ class InputFrame(Frame):
         self.p_entry.config(foreground="gray", state="disabled")
         self.p_button.config(state='disabled')
 
-        self.pause_button.config(state="active")
-        self.pause_var.set("Pause")
-        self.pause_button.config(state="normal")
-        self.reset_button.config(state="active")
+        self.progress_frame.pause_button.config(state="active")
+        self.progress_frame.pause_var.set("Pause")
+        self.progress_frame.pause_button.config(state="normal")
+        self.progress_frame.reset_button.config(state="active")
 
         self.results_frame.save_header.config(foreground="gray")
         self.results_frame.save_entry.config(state='disabled', foreground='gray')
@@ -550,19 +553,30 @@ class ProgressFrame(Frame):
         plot_axes = [0, 3000, 0, 1]
         self.plot_frame = PlotFrame(self, "Quality of Solution", \
                                 plot_axes, "lightskyblue", "Poor", "Perfect")
-        self.plot_frame.grid(row=0, column=0, sticky=(N))
+        self.plot_frame.grid(row=0, column=0, columnspan=2, sticky=(N))
         
         self.num_tries_title = Label(self, text="Number of Attempts Made", \
                                      font=("Optima Italic", 24), foreground="gray")
-        self.num_tries_title.grid(row=1, column=0, sticky=(NW), pady=(20,0))
+        self.num_tries_title.grid(row=1, column=0, columnspan=2, sticky=(NW), pady=(20,0))
         
         self.num_tries_var = StringVar()
         self.num_tries_var.set('__')
         self.num_tries = Label(self, textvariable=self.num_tries_var, \
                           font=("Optima Bold", 24), foreground="gray")
-        self.num_tries.grid(row=2, column=0, sticky=(S), pady=(20,20))
+        self.num_tries.grid(row=2, column=0, columnspan=2, sticky=(S), pady=(20,20))
 
 
+
+        self.pause_var = StringVar()
+        self.pause_var.set('Pause')
+        self.pause_button = Button(self, textvariable=self.pause_var, state='disabled',\
+                                   command=lambda: self.input_frame.pause_or_resume(), width=10, pady=20)
+        self.pause_button.grid(row=9, column=0)
+
+
+        self.reset_button = Button(self, text="Reset", state='disabled', \
+                                   command = lambda:self.input_frame.reset(), width=10)
+        self.reset_button.grid(row=9, column=1)
 
 
 
@@ -603,13 +617,9 @@ def main():
 
     # helper method used when quitting program
     def kill_all_threads():
-        print 'killing all threads'
         if input_frame.backend_call is not None:
-            print 'killing backend call'
             input_frame.backend_call.stop()
-            print 'joining backend call'
             input_frame.backend_call.join()
-            print 'joined backend call'
         root.destroy()
 
     root = Tk()
