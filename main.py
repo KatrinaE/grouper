@@ -20,7 +20,7 @@ def create_parser():
     parser = argparse.ArgumentParser(description="Run the Grouper command-line app")
     parser.add_argument("people_file", action="store")
     parser.add_argument("num_days", type=check_negative, action="store")
-    parser.add_argument("-f", "--output_filename", action="store")
+    parser.add_argument("-f", "--output_filename", default='output.csv', action="store")
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("-s", "--size-of-groups", type=check_negative, action='store')
     group.add_argument("-n", '--num-groups', type=check_negative, action="store")
@@ -117,7 +117,7 @@ def main(people_csv, num_days, num_groups, size_of_groups, output_filename='outp
     print "Table size: " + str(all_time_greatest.cost_of_group_size)
 
     # Write to file
-    write_to_csv(all_time_greatest.solution, days, filename)
+    write_to_csv(all_time_greatest.solution, days, output_filename)
 
     if config.verbose:
         display_result(best_solution.cost)

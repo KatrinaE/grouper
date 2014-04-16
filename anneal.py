@@ -57,7 +57,7 @@ def anneal_at_temp(best_state, current_state, T):
 def anneal(solution):
     """
     Applies a simulated annealing algorithm to improve the generated
-    seating chart solution. Similar to vanilla hill climbing, but
+    solution. Similar to vanilla hill climbing, but
     accepts moves to worse states, especially early on, to avoid
     getting trapped at a local maxima.
 

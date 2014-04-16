@@ -22,7 +22,7 @@ import matplotlib.pyplot as plt
 # Seating Chart Creator imports
 import main as backend
 import config
-from seating_io import write_to_csv        
+from grouper_io import write_to_csv        
 
 class ResultsFrame(Frame):
     def __init__(self, parent, plot_frame):
@@ -119,7 +119,8 @@ class ResultsFrame(Frame):
 
 
     def save_file(self):
-        write_to_csv(self.input_frame.solution.solution, self.save_var.get())
+        write_to_csv(self.input_frame.solution.solution, self.input_frame.solution.days, 
+                     self.save_var.get())
 
 
 
@@ -189,6 +190,16 @@ class InputFrame(Frame):
                                         command=lambda: self.generate_results())
         self.submit_button.grid(row=8, column=0, columnspan=2, pady=(20, 20))
 
+        self.pause_var = StringVar()
+        self.pause_var.set('Pause')
+        self.pause_button = Button(self, textvariable=self.pause_var, state='disabled',\
+                                   command=lambda: self.pause_or_resume(), width=10, pady=20)
+        self.pause_button.grid(row=9, column=0, columnspan=2)
+
+
+        self.reset_button = Button(self, text="Reset", state='disabled', \
+                                   command = lambda:self.reset(), width=10)
+        self.reset_button.grid(row=10, column=0, columnspan=2)
 
     def choose_input_type(self):
         if self.input_type_var.get() == 'num_groups':
@@ -218,8 +229,9 @@ class InputFrame(Frame):
             self.backend_call.lock.release()
             self.holding_lock = False
         self.backend_call.stop()
+        self.queue.put('Reset')
         self.backend_call.join()
-        self.queue.put('pause')
+        self.switch_to_input_mode()
 
     def get_filename(self, filename_var):
         options = dict(defaultextension='.csv',\
@@ -240,15 +252,13 @@ class InputFrame(Frame):
         self.p_entry.config(foreground="black", state="active")
         self.p_button.config(state='active')
 
-        print 'foo'
         self.results_frame.save_header.config(foreground="gray")
         self.results_frame.save_entry.config(state='disabled', foreground='gray')
         self.results_frame.save_button.config(state="disabled")
-        print 'bar'
 
-        self.progress_frame.pause_button.config(state="disabled")
-        self.progress_frame.pause_var.set("Pause")
-        self.progress_frame.reset_button.config(state="disabled")
+        self.pause_button.config(state="disabled")
+        self.pause_var.set("Pause")
+        self.reset_button.config(state="disabled")
 
         self.progress_frame.plot_frame.title.config(foreground="gray")
         self.progress_frame.plot_frame.shield.grid(row=1, column=0)
@@ -303,9 +313,9 @@ class InputFrame(Frame):
         self.results_frame.save_entry.config(state='normal', foreground='black')
         self.results_frame.save_button.config(state="active")
 
-        self.progress_frame.pause_button.config(state="active")
-        self.progress_frame.pause_var.set("Resume")
-        self.progress_frame.reset_button.config(state="active")
+        self.pause_button.config(state="active")
+        self.pause_var.set("Resume")
+        self.reset_button.config(state="active")
 
         self.progress_frame.plot_frame.title.config(foreground="gray")
         self.progress_frame.plot_frame.shield.grid(row=1, column=0)
@@ -345,10 +355,10 @@ class InputFrame(Frame):
         self.p_entry.config(foreground="gray", state="disabled")
         self.p_button.config(state='disabled')
 
-        self.progress_frame.pause_button.config(state="active")
-        self.progress_frame.pause_var.set("Pause")
-        self.progress_frame.pause_button.config(state="normal")
-        self.progress_frame.reset_button.config(state="active")
+        self.pause_button.config(state="active")
+        self.pause_var.set("Pause")
+        self.pause_button.config(state="normal")
+        self.reset_button.config(state="active")
 
         self.results_frame.save_header.config(foreground="gray")
         self.results_frame.save_entry.config(state='disabled', foreground='gray')
@@ -357,7 +367,7 @@ class InputFrame(Frame):
         self.progress_frame.plot_frame.title.config(foreground="black")
         self.progress_frame.plot_frame.shield.grid_forget()
         self.progress_frame.num_tries_title.config(foreground="black")
-        self.progress_frame.num_tries.config(foreground="violet red")
+        self.progress_frame.num_tries.config(foreground="RoyalBlue3")
 
         self.results_frame.frame_header.config(foreground="black")
         self.results_frame.pairs2_label.config(foreground="black")
@@ -368,12 +378,12 @@ class InputFrame(Frame):
         self.results_frame.same_spot3_label.config(foreground="black")
 
 
-        self.results_frame.pairs2.config(foreground="violet red")
-        self.results_frame.pairs3.config(foreground="violet red")
-        self.results_frame.trios2.config(foreground="violet red")
-        self.results_frame.trios3.config(foreground="violet red")
-        self.results_frame.same_spot2.config(foreground="violet red")
-        self.results_frame.same_spot3.config(foreground="violet red")
+        self.results_frame.pairs2.config(foreground="RoyalBlue3")
+        self.results_frame.pairs3.config(foreground="RoyalBlue3")
+        self.results_frame.trios2.config(foreground="RoyalBlue3")
+        self.results_frame.trios3.config(foreground="RoyalBlue3")
+        self.results_frame.same_spot2.config(foreground="RoyalBlue3")
+        self.results_frame.same_spot3.config(foreground="RoyalBlue3")
 
 
         self.options_header.config(foreground='gray')
@@ -401,11 +411,12 @@ class InputFrame(Frame):
     def process_queue(self):
         try:
             msg = self.queue.get(0)
-            if msg == "Task finished":
+            if msg == "Reset":
+                self.switch_to_input_mode()
+            elif msg == "Task finished":
+                print msg
                 self.backend_call = None
                 self.switch_to_output_mode()
-                print 'switched to output mode'
-                time.sleep(10)
             else:
                 self.solution = msg[0]
                 iteration = msg[1]
@@ -509,11 +520,7 @@ class InstructionsFrame(Frame):
     def initialize(self):
         self.instructions_text = \
     """ 
-    Seating Chart Creator makes an optimal seating chart for a given set of people, tables, and days. It generates a random chart, then searches for a better one by switching people around.\n
-    <<CLICK HERE>> to see the list of rules SCC follows.
-    <<CLICK HERE>> for an example People input file.
-    <<CLICK HERE>> for an example Tables input sfile.\n"""
-    
+    """    
         self.instructions_label = Label(self, text=self.instructions_text, font=("Optima",14), anchor=W, justify=LEFT)
         #self.instructions_label.grid(row=0, column=0, sticky=(W))
 
@@ -542,7 +549,7 @@ class ProgressFrame(Frame):
     def initialize(self):
         plot_axes = [0, 3000, 0, 1]
         self.plot_frame = PlotFrame(self, "Quality of Solution", \
-                                plot_axes, "dodgerblue", "Poor", "Perfect")
+                                plot_axes, "lightskyblue", "Poor", "Perfect")
         self.plot_frame.grid(row=0, column=0, sticky=(N))
         
         self.num_tries_title = Label(self, text="Number of Attempts Made", \
@@ -556,15 +563,6 @@ class ProgressFrame(Frame):
         self.num_tries.grid(row=2, column=0, sticky=(S), pady=(20,20))
 
 
-        self.pause_var = StringVar()
-        self.pause_var.set('Pause')
-        self.pause_button = Button(self, textvariable=self.pause_var, state='disabled',\
-                                   command=lambda: self.input_frame.pause_or_resume(), width=10, pady=20)
-        self.pause_button.grid(row=3, column=0, columnspan=2)
-
-        self.reset_button = Button(self, text="Reset", state='disabled', \
-                                   command = lambda:self.input_frame.reset(), width=10)
-        self.reset_button.grid(row=4, column=0, columnspan=2)
 
 
 
@@ -605,9 +603,13 @@ def main():
 
     # helper method used when quitting program
     def kill_all_threads():
+        print 'killing all threads'
         if input_frame.backend_call is not None:
+            print 'killing backend call'
             input_frame.backend_call.stop()
+            print 'joining backend call'
             input_frame.backend_call.join()
+            print 'joined backend call'
         root.destroy()
 
     root = Tk()
