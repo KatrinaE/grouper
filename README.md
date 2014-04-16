@@ -134,7 +134,7 @@ Depending on the specific parameters, generating groupings of 100 people can tak
 15-30 minutes. If you just need a 'good-enough' grouping, set the `anneal` setting
 to False.
 
-\* Like the rest of Grouper, 
+* Like the rest of Grouper, 
 the GUI is written in Python, using the Tkinter library. Grouper has a desktop
 interface rather than a web one because it is descended from an earlier
 desktop application.
