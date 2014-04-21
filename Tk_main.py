@@ -409,7 +409,7 @@ class InputFrame(Frame):
                                                 self.num_groups_var.get(), 
                                                 self.size_of_groups_var.get())
         self.backend_call.start()
-        self.parent.after(2500, self.process_queue)
+        self.parent.after(250, self.process_queue)
 
     def process_queue(self):
         try:
@@ -451,9 +451,9 @@ class InputFrame(Frame):
                 self.results_frame.same_spot2_var.set(self.solution.same_spot_freqs[2])
                 self.results_frame.same_spot3_var.set(self.solution.same_spot_freqs[3])
 
-                self.parent.after(2500, self.process_queue)
+                self.parent.after(250, self.process_queue)
         except Queue.Empty:
-            self.parent.after(2500, self.process_queue)
+            self.parent.after(250, self.process_queue)
 
 
 class PlotFrame(Frame):
@@ -522,10 +522,22 @@ class InstructionsFrame(Frame):
 
     def initialize(self):
         self.instructions_text = \
-    """ 
+    """
+    Grouper is a tool for assigning people to groups in a way that minimizes the number of people placed in the same group together more than once.
     """    
+
+        instructions_text2 = \
+    """
+    To use it, provide an input file with one name per line. For example:
+
+        John Peterson
+        Mary Smith
+        Frank Jones
+
+    Grouper often takes a long time to finish. You can pause it at any time.
+    """
         self.instructions_label = Label(self, text=self.instructions_text, font=("Optima",14), anchor=W, justify=LEFT)
-        #self.instructions_label.grid(row=0, column=0, sticky=(W))
+        self.instructions_label.grid(row=0, column=0, sticky=(W))
 
 
 class HeaderFrame(Frame):
@@ -534,7 +546,7 @@ class HeaderFrame(Frame):
         self.initialize()
 
     def initialize(self):
-        self.logo = PhotoImage(file='grouper-logo-small.gif')
+        self.logo = PhotoImage(file='static/grouper-logo.gif')
         self.logo_label = Label(self)
         self.logo_label['image'] = self.logo
         self.logo_label.grid(row=0, column=0, padx=20, pady=(10,0), sticky=(W))
@@ -602,7 +614,7 @@ class ThreadedBackendCall(threading.Thread):
                 break
             elif not self._stop_req.is_set():
                 self.lock.acquire()
-                #TODO: this is only accurate if T = 1
+                #TODO: this is only accurate if initial T = 1
                 iteration = math.log(T)/math.log(config.alpha)+1
                 self.queue.put((solution, iteration, solution.cost))
                 self.lock.release()

@@ -1,5 +1,40 @@
 import csv
+import math
 import collections
+
+class InputData(object):
+    def __init__(self, people_file, num_days, num_groups, size_of_groups, output_filename):
+        self.days = self._make_days(num_days)
+        self.people = people_objects(people_file, self.days)
+        self.num_people = len(self.people)
+        self.num_groups, \
+            self.size_of_groups = self._group_constraints(self.num_people,
+                                                    num_groups, 
+                                                    size_of_groups)
+        self.groups = group_objects(self.days, self.num_groups, self.size_of_groups)
+        if output_filename != None:
+            self.output_filename = output_filename
+        else:
+            self.output_filename = "output.csv"
+
+    def _make_days(self, num_days):
+        return [('day' + str(i)) for i in range(0, int(num_days))]
+
+    def _quotient(self, dividend, divisor):
+        float_divisor = float(divisor)
+        float_quotient = math.ceil(dividend/float_divisor)
+        int_quotient = int(float_quotient)
+        return int_quotient
+
+    def _group_constraints(self, num_people, num_groups, size_of_groups):
+        if size_of_groups != None:
+            size_of_groups = int(size_of_groups)
+            num_groups = self._quotient(num_people, size_of_groups)
+        elif num_groups != None:
+            num_groups = int(num_groups)
+            size_of_groups = self._quotient(num_people, num_groups)
+        return num_groups, size_of_groups
+
 
 class Person(object):
     def __init__(self, id, name, days):

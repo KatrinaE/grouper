@@ -4,7 +4,7 @@ import random
 import copy
 
 import config
-from display_messages import display_acceptance, display_cost_update
+from display_messages import print_acceptance, print_cost_update
 from solution import Solution
 
 def acceptance_probability(old_cost, new_cost, T):
@@ -37,18 +37,18 @@ def anneal_at_temp(best_state, current_state, T):
 
         if ap > r:
             if config.super_verbose:
-                display_acceptance(ap, r, new_cost, "ACCEPT")
+                print_acceptance(ap, r, new_cost, "ACCEPT")
             if new_cost < best_state.cost:
                 best_state = copy.deepcopy(current_state)
                 if config.super_verbose:
-                    display_cost_update(best_state.cost)
+                    print_cost_update(best_state.cost)
                 
         else:
             current_state.move_back_from_neighbor()
 
 
             if config.super_verbose:
-                display_acceptance(ap, r, new_cost, "REJECT")
+                print_acceptance(ap, r, new_cost, "REJECT")
 
         i = i + 1
     return best_state, current_state

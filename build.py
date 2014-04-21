@@ -1,4 +1,5 @@
 import collections
+from copy import deepcopy
 import random
 
 import config
@@ -71,6 +72,8 @@ def make_groupings(people, groups, day):
     return groups
 
 def build_guess(people, groups, all_days):
+    people_copy = deepcopy(people)
+    groups_copy = deepcopy(groups)
     for d in all_days:
         random.shuffle(people)
         groups_out = make_groupings(people, groups, d)

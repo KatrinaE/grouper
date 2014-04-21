@@ -134,8 +134,7 @@ class IntegrationTestCase(unittest.TestCase):
             groups_that_day = [g for g in groups_out if g.day == day]
             # make sure each day has the correct number of groups
             nose.tools.assert_equal(len(groups_that_day), num_groups)
-            # this list comprehension is gross, but all is does is make a list of
-            # the names of everyone who's seated -somewhere- that day.
+            # list the names of everyone who's seated -somewhere- that day.
             all_people_that_day = [p.name for group in groups_that_day for p in group.people]
             # make sure there's the same number of people as we started with
             nose.tools.assert_equal(len(all_people_that_day), len(people))
