@@ -1,26 +1,39 @@
 from collections import Counter
 from itertools import chain, combinations
+import numpy as np
 
 import config
 
-def times_each_group_sat_together(groups, group_size):
-    """
-    times_each_group_sat_together has the form [((id1, id2), count), ]
-    """
-    ids_by_group = []
+def initialize_ids_matrix(num_ids, group_size):
+    if group_size == 2:
+        ids_matrix = np.zeros((num_ids, num_ids), dtype=np.int)
+    elif group_size == 3:
+        ids_matrix = np.zeros((num_ids, num_ids, num_ids), dtype=np.int)
+    else:
+        raise SyntaxError("Currently, Grouper can only calculate the frequencies " + \
+                          "of groups of 2 or 3")
+    return ids_matrix
+
+def update_ids_matrix(ids_matrix, people_tuple, group_size):
+    if group_size == 2:
+        ids_matrix[people_tuple[0]][people_tuple[1]] += 1
+    elif group_size == 3:
+        ids_matrix[people_tuple[0]][people_tuple[1]][people_tuple[2]] += 1
+
+def create_freqs_matrix(groups, num_people, group_size):
+    ids_matrix = initialize_ids_matrix(num_people, group_size)
     for group in groups:
         ids = [person.id for person in group.people]
         ids.sort()
-        ids_by_group.append(ids)
-    times_each_group_sat_together = (
-        Counter(chain.from_iterable(
-            combinations(group, group_size) for group in ids_by_group)))
-    return times_each_group_sat_together
+        overlaps = combinations(ids, group_size)
+        for grouping in overlaps:
+            update_ids_matrix(ids_matrix, grouping, group_size)
+    return ids_matrix
 
-def freqs(groups, group_size):
-    freq_of_each_grouping = times_each_group_sat_together(groups, group_size)
-    freq_of_freqs = Counter(freq_of_each_grouping.values())
-    return freq_of_freqs
+def freqs(ids_matrix):
+    flattened_matrix = [x for x in ids_matrix.flat if x != 0]
+    freqs = Counter(flattened_matrix)
+    return freqs
 
 def cost(freqs, group_size):
     cost = 0
