@@ -76,8 +76,8 @@ def main(input_data):
             for (solution, T) in anneal(solution):
                 print_progress(solution, T)
 
-        if best_solution == None or solution.cost < best_solution.cost:
-            best_solution = solution
+            if best_solution == None or solution.cost < best_solution.cost:
+                best_solution = solution
 
     print_final_metrics(best_solution)
     write_to_csv(best_solution.solution, best_solution.days, output_filename)
