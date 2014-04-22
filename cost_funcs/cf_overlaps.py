@@ -30,9 +30,17 @@ def create_freqs_matrix(groups, num_people, group_size):
             update_ids_matrix(ids_matrix, grouping, group_size)
     return ids_matrix
 
-def freqs(ids_matrix):
+def make_flat_matrix(ids_matrix):
     flattened_matrix = [x for x in ids_matrix.flat if x != 0]
+    return flattened_matrix
+
+def make_counter(flattened_matrix):
     freqs = Counter(flattened_matrix)
+    return freqs
+
+def freqs(ids_matrix):
+    flattened_matrix = make_flat_matrix(ids_matrix)
+    freqs = make_counter(flattened_matrix)
     return freqs
 
 def cost(freqs, group_size):
