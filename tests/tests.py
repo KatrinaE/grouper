@@ -145,21 +145,27 @@ class IntegrationTestCase(unittest.TestCase):
         """
         Test that there are the correct number of people at each group each day
         """
-        people, groups, days, num_groups, size_of_groups = \
-        main.get_data(self.ppl_file, 5, num_groups=2)
-        solution = build_guess(people, groups, days)
-        self._validate_solution(people, days, num_groups, solution)
+        input_data = InputData(self.ppl_file,
+                           5,
+                           None,
+                           2,
+                           None)
+        solution = build_guess(input_data.people, input_data.groups, input_data.days)
+        self._validate_solution(input_data.people, input_data.days, input_data.num_groups, solution)
 
     def test_anneal(self):
         """
         Test that after annealing the solution has the correct number of people/groups
         """
         # TODO: figure out how to change settings in config.py for testing purposes
-        people, groups, days, num_groups, size_of_groups = \
-        main.get_data(self.ppl_file, 5, num_groups=2)
-        init_solution = build_guess(people, groups, days)
+        input_data = InputData(self.ppl_file,
+                           5,
+                           None,
+                           2,
+                           None)
+        init_solution = build_guess(input_data.people, input_data.groups, input_data.days)
         gen = anneal(init_solution)
         for (solution, T) in gen:
             best_solution = solution
-            print best_solution.cost
-        self._validate_solution(people, days, num_groups, best_solution)
+        print best_solution.cost
+        self._validate_solution(input_data.people, input_data.days, input_data.num_groups, best_solution)

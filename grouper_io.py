@@ -40,8 +40,7 @@ class Person(object):
     def __init__(self, id, name, days):
         self.id = id
         self.name = name
-        for day in days:
-            setattr(self, day, '')
+        self.groupings = dict.fromkeys(days, '')
 
 def people_objects(filename, days):
     current_id = 1
@@ -58,8 +57,11 @@ class Group(object):
     def __init__(self, name, day, capacity):
         self.name = name
         self.day = day
-        self.capacity = capacity
+        self.capacity = int(capacity)
         self.people = []
+
+    def not_full(self):
+        return len(self.people) < self.capacity
 
 def group_objects(days, num_groups, size_of_groups):
     '''

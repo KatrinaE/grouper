@@ -61,4 +61,3 @@ class Solution(object):
         group1.people.append(person0)
         setattr(person0, group0.day, group1.name)
         setattr(person1, group0.day, group0.name)
-

@@ -10,16 +10,18 @@ def print_init_cost(cost):
         print "Best init cost " + str(cost)
 
 def print_acceptance(ap, r, new_cost, status):
-    if status == "ACCEPT" : 
-        sym = ">"
-    else: 
-        sym = "<"
-    print ''
-    print str(status) + ": " + str(ap) + " " + sym + " > RANDOM: " + str(r)
-    print "new state's cost: " + str(new_cost)
+    if config.super_verbose:
+        if status == "ACCEPT" : 
+            sym = ">"
+        else: 
+            sym = "<"
+        print ''
+        print str(status) + ": " + str(ap) + " " + sym + " > RANDOM: " + str(r)
+        print "new state's cost: " + str(new_cost)
 
 def print_cost_update(bcost):
-    print "changed best cost to " + str(bcost)
+    if config.super_verbose:
+        print "changed best cost to " + str(bcost)
 
 def print_progress(solution, T):
     if config.display_progress:
