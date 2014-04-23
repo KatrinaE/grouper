@@ -6,7 +6,7 @@ import config
 from grouper_io import InputData, write_to_csv
 from build import build_guess
 from anneal import anneal
-from display_messages import print_settings, print_init_cost, print_progress
+from display_messages import print_settings, print_init_cost, print_progress, print_final_metrics
 from solution import Solution
 
 def check_negative(value):
