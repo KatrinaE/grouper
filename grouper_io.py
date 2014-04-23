@@ -27,10 +27,10 @@ class InputData(object):
         return int_quotient
 
     def _group_constraints(self, num_people, num_groups, size_of_groups):
-        if size_of_groups != None:
+        if size_of_groups != (None or ''):
             size_of_groups = int(size_of_groups)
             num_groups = self._quotient(num_people, size_of_groups)
-        elif num_groups != None:
+        elif num_groups != (None or ''):
             num_groups = int(num_groups)
             size_of_groups = self._quotient(num_people, num_groups)
         return num_groups, size_of_groups

@@ -22,7 +22,7 @@ import matplotlib.pyplot as plt
 # Seating Chart Creator imports
 import main as backend
 import config
-from grouper_io import write_to_csv        
+from grouper_io import write_to_csv, InputData
 
 class ResultsFrame(Frame):
     def __init__(self, parent, plot_frame):
@@ -409,7 +409,7 @@ class InputFrame(Frame):
                                                 self.num_groups_var.get(), 
                                                 self.size_of_groups_var.get())
         self.backend_call.start()
-        self.parent.after(250, self.process_queue)
+        self.parent.after(10, self.process_queue)
 
     def process_queue(self):
         try:
@@ -451,9 +451,9 @@ class InputFrame(Frame):
                 self.results_frame.same_spot2_var.set(self.solution.same_spot_freqs[2])
                 self.results_frame.same_spot3_var.set(self.solution.same_spot_freqs[3])
 
-                self.parent.after(250, self.process_queue)
+                self.parent.after(10, self.process_queue)
         except Queue.Empty:
-            self.parent.after(250, self.process_queue)
+            self.parent.after(10, self.process_queue)
 
 
 class PlotFrame(Frame):
@@ -607,8 +607,10 @@ class ThreadedBackendCall(threading.Thread):
     def run(self):
         max_iterations = math.log(config.T_min)/math.log(config.alpha) \
                          * config.iterations_per_temp
-        gen = backend.main_gui(self.p_filename, self.num_days,
-                               self.num_groups, self.size_of_groups)
+        output_filename = None
+        input_data = InputData(self.p_filename, self.num_days,
+                               self.num_groups, self.size_of_groups, output_filename)
+        gen = backend.main(input_data)
         for (solution, T) in gen:
             if self._stop_req.is_set():
                 break

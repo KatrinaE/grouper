@@ -28,44 +28,7 @@ def create_parser():
     group.add_argument("-n", '--num-groups', type=check_negative, action="store")
     return parser
 
-
-def main_gui(people_csv, num_days, num_groups, size_of_groups):
-    """
-    This is the main entry point for the Python GUI.
-    We have to do this completely separately from 'main' because
-    including the 'yield' statement makes this function a generator,
-    which prevents it from working on the command line.
-    """
-    
-    people, groups, days, num_groups, size_of_groups = get_data(
-        people_csv, num_days, num_groups, size_of_groups)
-
-    people_copy = deepcopy(people)
-    groups_copy = deepcopy(groups)
-    init_solution = build_guess(people_copy, groups_copy, days)
-    
-    best_solution = init_solution
-    for i in range(0, config.num_tries):
-        people_copy = deepcopy(people)
-        groups_copy = deepcopy(groups)
-        init_solution = build_guess(people_copy, groups_copy, days)
-
-        if config.verbose:
-            print_init_cost(init_solution.cost)
-
-        if config.anneal:
-            gen = anneal(init_solution)
-            for (best_solution, T) in gen:
-                if config.print_progress:
-                    print_annealing_progress(best_solution.cost, T)
-                yield best_solution, T
-        else:
-                best_solution = init_solution
-
 def main(input_data):
-    print "*************************************"
-    print_settings()
-    
     best_solution = None
     for i in range(0, config.num_tries):
         solution = build_guess(input_data.people, input_data.groups, input_data.days)
@@ -75,13 +38,9 @@ def main(input_data):
         if config.anneal:
             for (solution, T) in anneal(solution):
                 print_progress(solution, T)
-
-            if best_solution == None or solution.cost < best_solution.cost:
-                best_solution = solution
-
-    print_final_metrics(best_solution)
-    write_to_csv(best_solution.solution, input_data.days, input_data.output_filename)
-    print "************************************"
+                if best_solution == None or solution.cost < best_solution.cost:
+                    best_solution = deepcopy(solution)
+                yield best_solution, T
 
 if __name__ == '__main__':
     parser = create_parser()
@@ -91,4 +50,9 @@ if __name__ == '__main__':
                            args.num_groups, 
                            args.size_of_groups, 
                            args.output_filename)
-    main(input_data)
+
+    for (solution, T) in main(input_data):
+        print_progress(solution, T)
+
+    print_final_metrics(solution)
+    write_to_csv(solution.solution, input_data.days, input_data.output_filename)
