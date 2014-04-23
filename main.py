@@ -80,7 +80,7 @@ def main(input_data):
                 best_solution = solution
 
     print_final_metrics(best_solution)
-    write_to_csv(best_solution.solution, best_solution.days, output_filename)
+    write_to_csv(best_solution.solution, input_data.days, input_data.output_filename)
     print "************************************"
 
 if __name__ == '__main__':

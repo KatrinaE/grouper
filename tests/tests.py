@@ -32,7 +32,7 @@ class IOTestCase(unittest.TestCase):
 
         for p in people:
             for d in self.days:
-                nose.tools.assert_equal(getattr(p, d), '')
+                nose.tools.assert_equal(p.groupings[d], '')
 
     def test_group_objects(self):
         """

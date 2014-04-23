@@ -10,7 +10,7 @@ from solution import Solution
 def acceptance_probability(old_cost, new_cost, T):
     """ Metropolis-Hastings probability function for deciding 
     whether or not to accept a new solution. Based on code from: 
-    http://code.activesolution.com/recipes/
+    http://code.activestate.com/recipes/
     414200-metropolis-hastings-sampler/
     """
     try:
@@ -27,19 +27,22 @@ def acceptance_probability(old_cost, new_cost, T):
 def anneal_at_temp(best_solution, current_solution, T):
     i = 1
     while i < config.iterations_per_temp:
-        new_solution = Solution.from_old(current_solution)
         old_cost = current_solution.cost
-        new_cost = new_solution.cost
+        current_solution.move_to_neighbor()
+        new_cost = current_solution.cost
+
 
         ap = acceptance_probability(old_cost, new_cost, T)
         r = random.random()
 
         if ap > r:
-            current_solution = new_solution
+
             print_acceptance(ap, r, new_cost, "ACCEPT")
             if new_cost < best_solution.cost:
-                best_solution = copy.deepcopy(new_solution)
+                best_solution = copy.deepcopy(current_solution)
                 print_cost_update(best_solution.cost)
+        else:
+            current_solution.move_back_from_neighbor()
         print_acceptance(ap, r, new_cost, "REJECT")
 
         i = i + 1
@@ -62,6 +65,6 @@ def anneal(solution):
         yield best_solution, T
         best_solution, current_solution = anneal_at_temp(best_solution, current_solution, T)
         T = T*config.alpha
-        print best_solution.cost
+
 
     yield best_solution, T

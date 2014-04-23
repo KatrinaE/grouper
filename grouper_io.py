@@ -43,11 +43,11 @@ class Person(object):
         self.groupings = dict.fromkeys(days, '')
 
 def people_objects(filename, days):
-    current_id = 0
+    current_id = 1
     people_list = []
     with open(filename, 'r') as f:
         for line in f:
-            name = line
+            name = line.rstrip()
             person = Person(current_id, name, days)
             people_list.append(person)
             current_id += 1

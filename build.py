@@ -45,5 +45,5 @@ def build_guess(people, groups, all_days):
         # TODO get subset of people who need a group that day
         random.shuffle(people)
         groups_out = make_groupings(people, groups, d)
-    guess = Solution.initial_solution(groups)
+    guess = Solution(groups)
     return guess
