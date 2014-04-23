@@ -5,7 +5,7 @@ import math
 from collections import Counter
 
 import main
-from grouper_io import people_objects, group_objects, Person, days_from_groups
+from grouper_io import people_objects, group_objects, Person, days_from_groups, InputData
 from solution import Solution
 from build import build_guess
 from anneal import anneal
@@ -32,7 +32,7 @@ class IOTestCase(unittest.TestCase):
 
         for p in people:
             for d in self.days:
-                nose.tools.assert_equal(getattr(p, d), '')
+                nose.tools.assert_equal(p.groupings[d], '')
 
     def test_group_objects(self):
         """

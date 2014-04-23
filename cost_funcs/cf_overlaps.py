@@ -13,13 +13,13 @@ def times_each_group_sat_together(groups, group_size):
         ids.sort()
         ids_by_group.append(ids)
     times_each_group_sat_together = (
-        Counter(chain.from_iterable(
+        myCounter(chain.from_iterable(
             combinations(group, group_size) for group in ids_by_group)))
     return times_each_group_sat_together
 
 def freqs(groups, group_size):
     freq_of_each_grouping = times_each_group_sat_together(groups, group_size)
-    freq_of_freqs = Counter(freq_of_each_grouping.values())
+    freq_of_freqs = myCounter(freq_of_each_grouping.values())
     return freq_of_freqs
 
 def cost(freqs, group_size):
@@ -28,3 +28,8 @@ def cost(freqs, group_size):
         if freq != 1:
             cost += (freq**4 * num_occurrences)
     return cost
+
+class myCounter(Counter):
+    def __init__(self, iterable=None, **kwds):
+        super(myCounter, self).__init__(iterable=iterable, **kwds)
+
