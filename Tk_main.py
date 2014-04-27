@@ -523,21 +523,20 @@ class InstructionsFrame(Frame):
     def initialize(self):
         self.instructions_text = \
     """
-    Grouper is a tool for assigning people to groups in a way that minimizes the number of people placed in the same group together more than once.
+    reGrouper is a tool for assigning people to groups in a way that minimizes the number of people placed in the same group together more than once. 
+    To use it, provide an input .txt or .csv file with one name on each line.
+
+    reGrouper often takes a long time to finish. You can pause and save your current results at any time.
     """    
 
-        instructions_text2 = \
+        self.instructions_text2 = \
     """
-    To use it, provide an input file with one name per line. For example:
-
-        John Peterson
-        Mary Smith
-        Frank Jones
-
-    Grouper often takes a long time to finish. You can pause it at any time.
     """
         self.instructions_label = Label(self, text=self.instructions_text, font=("Optima",14), anchor=W, justify=LEFT)
         self.instructions_label.grid(row=0, column=0, sticky=(W))
+
+        #self.instructions_label2 = Label(self, text=self.instructions_text2, font=("Optima",14), anchor=W, justify=LEFT)
+        #self.instructions_label2.grid(row=1, column=0, sticky=(W))
 
 
 class HeaderFrame(Frame):
@@ -551,7 +550,7 @@ class HeaderFrame(Frame):
         self.logo_label['image'] = self.logo
         self.logo_label.grid(row=0, column=0, padx=20, pady=(10,0), sticky=(W))
 
-        self.title = Label(self, text="Grouper", \
+        self.title = Label(self, text="reGrouper", \
                       font=("Optima", 48))
         self.title.grid(row=0, column=1, sticky=(W))
 
