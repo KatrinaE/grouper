@@ -86,7 +86,7 @@ him when his name is drawn, and a simulated annealing
 algorithm that generates a solution and switches people
 around repeatedly in a search for the optimal solution.
 (For the curious, I've written a [blog post about simulated
-annealing](http://katrinaeg.com/simulated-annealing.html).
+annealing](http://katrinaeg.com/simulated-annealing.html)).
 
 By modifying the `greedy` and `anneal` settings in
 `config.py`, you can turn these two parts of the algorithm
