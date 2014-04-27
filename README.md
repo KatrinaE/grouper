@@ -114,10 +114,9 @@ reGrouper comes with the following configuration settings, set in
 | `num_tries` | (integer >= 1) | The number of attempts to make. Default is 1.|
 |     |              |                                                  |
 | `T` | (float >= 0) | the initial annealing temperature. Default is 1. |
-| `alpha` | (float between 0 and 1) | The proportion by which to decrease `T`
-at the end of each annealing iteration. Default is 0.95. |
-| `T_min` (float between 0 and `T`) | The temperature at which to stop if an acceptable solution has not yet been found. Default is 0.001. |
-| `max_acceptable_cost` | (int >= 0) | the cost at which to stop searching for a better solution and return the current one. Default is 0, which corresponds with perfectly satisfying all constraints. |
+| `alpha` | (float between 0 and 1) | The proportion by which to decrease `T` at the end of each annealing iteration. Default is 0.95. |
+| `T_min` | (float between 0 and `T`) | The temperature at which to stop if an acceptable solution has not yet been found. Default is 0.001. |
+| `max_acceptable_cost` | (int >= 0) | The cost at which to stop searching for a better solution and return the current one. Default is 0, which corresponds with perfectly satisfying all constraints. |
 | `iterations_per_temp` | (int >= 0) | the number of switches to make at each temperature while annealing. Default is 500. |
 
 The last five parameters correspond with simulated annealing.
